@@ -6,6 +6,9 @@ import (
 
 	"os"
 	"path/filepath"
+
+	"facette.io/natsort"
+	"github.com/davecgh/go-spew/spew"
 	// "github.com/gofiber/fiber/v2"
 )
 
@@ -36,10 +39,13 @@ func main() {
 
 	// app.Listen(":4200")
 
-	getAlbumInfo(
+	var result=getAllImages(
 		"C:\\Users\\ktkm\\Desktop\\h\\cg",
 		"nekonote",
 	)
+
+	// fmt.Println(result)
+	spew.Dump(result)
 }
 
 func getAlbumInfo(imageDataPath string,targetPath string) {
@@ -54,4 +60,57 @@ func getAlbumInfo(imageDataPath string,targetPath string) {
 	}
 
 	fmt.Println(files)
+}
+
+/* get ALL images under target album, recursively.
+   paths are relative to the image data path (will not include the full file path).
+   return images are grouped by their albums, which have an ordering. */
+func getAllImages(imageDataPath string,targetPath string) [][]string {
+	var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
+
+	var direntrys []fs.DirEntry
+	var err error
+	direntrys,err=os.ReadDir(fullTargetPath)
+
+	if err!=nil {
+		panic("read dir failed")
+	}
+
+	var imagesInCurrentDir []string
+	var dirsInCurrentDir []string
+
+	// sort all items in current dir into image or dir
+	for i := range direntrys {
+		var direntry fs.DirEntry=direntrys[i]
+
+		var itemPath string=filepath.ToSlash(filepath.Join(targetPath,direntry.Name()))
+
+		if direntry.IsDir() {
+			dirsInCurrentDir=append(
+				dirsInCurrentDir,
+				itemPath,
+			)
+		} else {
+			imagesInCurrentDir=append(imagesInCurrentDir,itemPath)
+		}
+	}
+
+	var collectedItems [][]string
+
+	// recursively collecting items of sub dirs
+	for i := range dirsInCurrentDir {
+		var dir string=dirsInCurrentDir[i]
+
+		var result [][]string=getAllImages(imageDataPath,dir)
+
+		collectedItems=append(collectedItems,result...)
+	}
+
+	// adding own dir's items to subdir items (if any)
+	if len(imagesInCurrentDir)>0 {
+		natsort.Sort(imagesInCurrentDir)
+		collectedItems=append(collectedItems,imagesInCurrentDir)
+	}
+
+	return collectedItems
 }
