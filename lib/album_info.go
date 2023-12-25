@@ -2,7 +2,6 @@
 package eh_system
 
 import (
-	"fmt"
 	"io/fs"
 
 	"os"
@@ -11,18 +10,32 @@ import (
 	"facette.io/natsort"
 )
 
-func GetAlbumInfo(imageDataPath string,targetPath string) {
-    var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
+// func GetAlbumInfo(imageDataPath string,targetPath string) {
+//     var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
 
-    var files []fs.DirEntry
-    var err error
-    files,err=os.ReadDir(fullTargetPath)
+//     var files []fs.DirEntry
+//     var err error
+//     files,err=os.ReadDir(fullTargetPath)
 
-    if err!=nil {
-        panic("failed to readdir")
+//     if err!=nil {
+//         panic("failed to readdir")
+//     }
+
+//     fmt.Println(files)
+// }
+
+func GetAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
+    var allItems []string=getAllImagesFlat(imageDataPath,targetPath)
+
+    return AlbumInfo {
+        title:filepath.Base(targetPath),
+        items:len(allItems),
+        immediateItems:0,
+
+        img:"",
+        date:"",
+        album:false,
     }
-
-    fmt.Println(files)
 }
 
 /* get ALL images under target album, recursively.
@@ -76,4 +89,18 @@ func GetAllImages(imageDataPath string,targetPath string) [][]string {
     }
 
     return collectedItems
+}
+
+/* same as get all images, but the result is flattened */
+func getAllImagesFlat(imageDataPath string,targetPath string) []string {
+    var res [][]string=GetAllImages(imageDataPath,targetPath)
+
+    var output []string
+
+    // flatten
+    for i := range res {
+        output=append(output,res[i]...)
+    }
+
+    return output
 }

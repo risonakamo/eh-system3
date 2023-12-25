@@ -1,4 +1,4 @@
-package eh_system_types
+package eh_system
 
 // asdasd
 
