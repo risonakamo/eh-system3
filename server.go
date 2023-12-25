@@ -23,7 +23,7 @@ func main() {
 
         fmt.Println("getting album:",targetPath)
 
-        var result [][]string=eh_system.GetAllImages(IMAGE_DATA_PATH,targetPath,true)
+        var result *[][]string=eh_system.GetAllImages(IMAGE_DATA_PATH,targetPath,true)
 
         spew.Dump(result)
 
