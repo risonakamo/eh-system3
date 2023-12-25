@@ -3,6 +3,7 @@ package eh_system
 
 import (
 	"io/fs"
+	"math/rand"
 
 	"os"
 	"path/filepath"
@@ -25,7 +26,7 @@ import (
 // }
 
 func GetAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
-    var allItems []string=getAllImagesFlat(imageDataPath,targetPath)
+    var allItems []string=getAllImagesFlat(imageDataPath,targetPath,false)
 
     return AlbumInfo {
         title:filepath.Base(targetPath),
@@ -41,7 +42,7 @@ func GetAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
 /* get ALL images under target album, recursively.
    paths are relative to the image data path (will not include the full file path).
    return images are grouped by their albums, which have an ordering. */
-func GetAllImages(imageDataPath string,targetPath string) [][]string {
+func GetAllImages(imageDataPath string,targetPath string,shuffle bool) [][]string {
     var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
 
     var direntrys []fs.DirEntry
@@ -77,7 +78,7 @@ func GetAllImages(imageDataPath string,targetPath string) [][]string {
     for i := range dirsInCurrentDir {
         var dir string=dirsInCurrentDir[i]
 
-        var result [][]string=GetAllImages(imageDataPath,dir)
+        var result [][]string=GetAllImages(imageDataPath,dir,shuffle)
 
         collectedItems=append(collectedItems,result...)
     }
@@ -88,12 +89,16 @@ func GetAllImages(imageDataPath string,targetPath string) [][]string {
         collectedItems=append(collectedItems,imagesInCurrentDir)
     }
 
+    if shuffle {
+        shuffleArray[[]string](&collectedItems)
+    }
+
     return collectedItems
 }
 
 /* same as get all images, but the result is flattened */
-func getAllImagesFlat(imageDataPath string,targetPath string) []string {
-    var res [][]string=GetAllImages(imageDataPath,targetPath)
+func getAllImagesFlat(imageDataPath string,targetPath string,shuffle bool) []string {
+    var res [][]string=GetAllImages(imageDataPath,targetPath,shuffle)
 
     var output []string
 
@@ -103,4 +108,11 @@ func getAllImagesFlat(imageDataPath string,targetPath string) []string {
     }
 
     return output
+}
+
+/** shuffle an array */
+func shuffleArray[T any](array *[]T) {
+    rand.Shuffle(len(*array),func (i int,j int) {
+        (*array)[i],(*array)[j]=(*array)[j],(*array)[i]
+    })
 }
