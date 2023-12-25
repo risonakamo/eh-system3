@@ -1,5 +1,7 @@
 package eh_system_types
 
+// asdasd
+
 type ApiMode string
 
 /* possible api modes */
@@ -25,7 +27,7 @@ type AlbumInfo struct {
     album bool
 }
 
-/* response to request for single album's contents. contains flat list of all images 
+/* response to request for single album's contents. contains flat list of all images
    in some order */
 type AlbumResponse struct {
     urls []string

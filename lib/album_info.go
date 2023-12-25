@@ -1,14 +1,14 @@
 // functions for getting things related to albums
-package album_info
+package eh_system
 
 import (
-    "fmt"
-    "io/fs"
+	"fmt"
+	"io/fs"
 
-    "os"
-    "path/filepath"
+	"os"
+	"path/filepath"
 
-    "facette.io/natsort"
+	"facette.io/natsort"
 )
 
 func GetAlbumInfo(imageDataPath string,targetPath string) {

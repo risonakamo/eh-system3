@@ -1,10 +1,10 @@
 package main
 
 import (
-    "github.com/davecgh/go-spew/spew"
-    // "github.com/gofiber/fiber/v2"
+	eh_system "eh_system/lib"
 
-    "eh_system/album_info"
+	"github.com/davecgh/go-spew/spew"
+	// "github.com/gofiber/fiber/v2"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
     // app.Listen(":4200")
 
-    var result=album_info.GetAllImages(
+    var result=eh_system.GetAllImages(
         "C:\\Users\\ktkm\\Desktop\\h\\cg",
         "nekonote",
     )
