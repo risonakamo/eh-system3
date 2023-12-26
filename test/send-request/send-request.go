@@ -2,17 +2,24 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"io"
 	"net/http"
 )
 
 func main() {
-    var r *http.Request
-    r,_=http.NewRequest(
+    var req *http.Request
+    req,_=http.NewRequest(
         "POST",
         "http://localhost:4200/get-album",
         bytes.NewBufferString("nekonote"),
     )
 
     var client *http.Client=&http.Client{}
-    client.Do(r)
+
+    var res *http.Response
+    res,_=client.Do(req)
+
+    body,_:=io.ReadAll(res.Body)
+    fmt.Println(string(body))
 }

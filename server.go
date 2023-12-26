@@ -4,7 +4,6 @@ import (
 	eh_system "eh_system/lib"
 	"fmt"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -23,11 +22,12 @@ func main() {
 
         fmt.Println("getting album:",targetPath)
 
-        var result *[][]string=eh_system.GetAllImages(IMAGE_DATA_PATH,targetPath,true)
+        var result []string=eh_system.GetAllImagesFlat(IMAGE_DATA_PATH,targetPath,true)
 
-        spew.Dump(result)
-
-        return ctx.SendStatus(200)
+        return ctx.JSON(eh_system.AlbumResponse {
+            Urls:result,
+            Mode:eh_system.LOCAL_MODE,
+        })
     })
 
     // app.Use(logger.New())

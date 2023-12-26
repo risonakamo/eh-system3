@@ -30,6 +30,6 @@ type AlbumInfo struct {
 /* response to request for single album's contents. contains flat list of all images
    in some order */
 type AlbumResponse struct {
-    urls []string
-    mode ApiMode
+    Urls []string
+    Mode ApiMode
 }
