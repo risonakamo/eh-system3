@@ -11,7 +11,7 @@ func main() {
     var req *http.Request
     req,_=http.NewRequest(
         "POST",
-        "http://localhost:4200/get-album",
+        "http://localhost:4200/get-album-info",
         bytes.NewBufferString("nekonote"),
     )
 

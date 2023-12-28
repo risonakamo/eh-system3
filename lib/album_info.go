@@ -25,17 +25,53 @@ import (
 //     fmt.Println(files)
 // }
 
-func GetAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
+/** get album info for every item in a target path */
+func GetAlbumInfos(imageDataPath string,targetPath string) []AlbumInfo {
+    var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
+
+    var items []fs.DirEntry
+    items,_=os.ReadDir(fullTargetPath)
+
+    var albums []AlbumInfo
+
+    for i := range items {
+        var item *fs.DirEntry=&items[i]
+
+        if !(*item).IsDir() {
+            continue
+        }
+
+        var subdirPath string=filepath.Join(targetPath,(*item).Name())
+
+        albums=append(albums,getAlbumInfo(imageDataPath,subdirPath))
+    }
+
+    return albums
+}
+
+func getAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
+    var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
+
     var allItems []string=GetAllImagesFlat(imageDataPath,targetPath,false)
 
-    return AlbumInfo {
-        title:filepath.Base(targetPath),
-        items:len(allItems),
-        immediateItems:0,
+    var immediateItems []fs.DirEntry
+    immediateItems,_=os.ReadDir(fullTargetPath)
 
-        img:"",
-        date:"",
-        album:false,
+    // todo: maybe get the highest mod time of the immediate items instead of
+    // the target path itself?
+    var targetInfo os.FileInfo
+    targetInfo,_=os.Stat(fullTargetPath)
+
+    return AlbumInfo {
+        Title:filepath.Base(targetPath),
+        Items:len(allItems),
+        ImmediateItems:len(immediateItems),
+
+        Img:"",
+        Date:targetInfo.ModTime().String(),
+
+        // it is an image album if all immediate items are non-directories
+        Album:isAllFiles(immediateItems),
     }
 }
 
@@ -115,4 +151,15 @@ func shuffleArray[T any](array []T) {
     rand.Shuffle(len(array),func (i int,j int) {
         (array)[i],(array)[j]=(array)[j],(array)[i]
     })
+}
+
+/** checks if all items in fs dir entry array is a file */
+func isAllFiles(items []fs.DirEntry) bool {
+    for i := range items {
+        if items[i].IsDir() {
+            return false
+        }
+    }
+
+    return true
 }

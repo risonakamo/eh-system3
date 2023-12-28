@@ -4,6 +4,7 @@ import (
 	eh_system "eh_system/lib"
 	"fmt"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -17,6 +18,7 @@ func main() {
     })
 
     // ---- apis ----
+    // get a single album for viewing mode
     app.Post("/get-album",func (ctx *fiber.Ctx) error {
         var targetPath string=string(ctx.Body())
 
@@ -30,6 +32,19 @@ func main() {
         })
     })
 
+    // get a list of album infos under a target path
+    app.Post("/get-album-info",func(ctx *fiber.Ctx) error {
+        var targetPath string=string(ctx.Body())
+
+        fmt.Println("getting album info:",targetPath)
+
+        var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(IMAGE_DATA_PATH,targetPath)
+
+        spew.Dump(result)
+
+        return ctx.JSON(result)
+    })
+
     // app.Use(logger.New())
-    app.Listen(":4200")
+    app.Listen("localhost:4200")
 }
