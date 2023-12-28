@@ -12,7 +12,7 @@ func main() {
     req,_=http.NewRequest(
         "POST",
         "http://localhost:4200/get-album-info",
-        bytes.NewBufferString("nekonote"),
+        bytes.NewBufferString(""),
     )
 
     var client *http.Client=&http.Client{}
