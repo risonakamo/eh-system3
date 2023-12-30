@@ -17,6 +17,7 @@ func main() {
     // --- variables ---
     var HERE string
     HERE,_=os.Executable()
+    HERE=filepath.Dir(HERE)
 
 
     // --- server setup ---
@@ -48,9 +49,16 @@ func main() {
     app.Post("/get-album-info",func(ctx *fiber.Ctx) error {
         var targetPath string=string(ctx.Body())
 
-        fmt.Println("getting album info:",targetPath)
+        var displayTargetPath string=targetPath
+
+        if len(targetPath)==0 {
+            displayTargetPath="/"
+        }
+
+        fmt.Println("getting album info:",displayTargetPath)
 
         var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(IMAGE_DATA_PATH,targetPath)
+        result=eh_system.FixAlbumInfoImageUrls(result)
 
         fmt.Printf("sending %d albums\n",len(result))
 
@@ -60,15 +68,15 @@ func main() {
 
 
     // --- statics ---
-    app.Static("/build",filepath.Join(HERE,"eh-system-web/build"))
+    app.Static("/build",filepath.Join(HERE,"../eh-system-web/build"))
 
-    app.Static("/viewer/*",filepath.Join(HERE,"eh-system-web/web/pages/ehviewer"))
+    app.Static("/viewer/*",filepath.Join(HERE,"../eh-system-web/web/pages/ehviewer"))
 
-    app.Static("/albums/*",filepath.Join(HERE,"eh-system-web/web/pages/albumexplore"))
+    app.Static("/albums/*",filepath.Join(HERE,"../eh-system-web/web/pages/albumexplore"))
 
-    app.Static("/assets/fonts",filepath.Join(HERE,"eh-system-web/web/assets/fonts"))
+    app.Static("/assets/fonts",filepath.Join(HERE,"../eh-system-web/web/assets/fonts"))
 
-    app.Static("/assets/imgs",filepath.Join(HERE,"eh-system-web/web/assets/imgs"))
+    app.Static("/assets/imgs",filepath.Join(HERE,"../eh-system-web/web/assets/imgs"))
 
     app.Static("/imagedata",IMAGE_DATA_PATH,fiber.Static{
         Browse:true,

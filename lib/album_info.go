@@ -34,33 +34,6 @@ func GetAlbumInfos(imageDataPath string,targetPath string) []AlbumInfo {
     return albums
 }
 
-/** get album info of single target path */
-func getAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
-    var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
-
-    var allItems []string=GetAllImagesFlat(imageDataPath,targetPath,false)
-
-    var immediateItems []fs.DirEntry
-    immediateItems,_=os.ReadDir(fullTargetPath)
-
-    // todo: maybe get the highest mod time of the immediate items instead of
-    // the target path itself?
-    var targetInfo os.FileInfo
-    targetInfo,_=os.Stat(fullTargetPath)
-
-    return AlbumInfo {
-        Title:filepath.Base(targetPath),
-        Items:len(allItems),
-        ImmediateItems:len(immediateItems),
-
-        Img:randFromArray[string](allItems),
-        Date:targetInfo.ModTime().String(),
-
-        // it is an image album if all immediate items are non-directories
-        Album:isAllFiles(immediateItems),
-    }
-}
-
 /* get ALL images under target album, recursively.
    paths are relative to the image data path (will not include the full file path).
    return images are grouped by their albums, which have an ordering. */
@@ -130,4 +103,31 @@ func GetAllImagesFlat(imageDataPath string,targetPath string,shuffle bool) []str
     }
 
     return output
+}
+
+/** get album info of single target path */
+func getAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
+    var fullTargetPath string=filepath.Join(imageDataPath,targetPath)
+
+    var allItems []string=GetAllImagesFlat(imageDataPath,targetPath,false)
+
+    var immediateItems []fs.DirEntry
+    immediateItems,_=os.ReadDir(fullTargetPath)
+
+    // todo: maybe get the highest mod time of the immediate items instead of
+    // the target path itself?
+    var targetInfo os.FileInfo
+    targetInfo,_=os.Stat(fullTargetPath)
+
+    return AlbumInfo {
+        Title:filepath.Base(targetPath),
+        Items:len(allItems),
+        ImmediateItems:len(immediateItems),
+
+        Img:randFromArray[string](allItems),
+        Date:targetInfo.ModTime().String(),
+
+        // it is an image album if all immediate items are non-directories
+        Album:isAllFiles(immediateItems),
+    }
 }
