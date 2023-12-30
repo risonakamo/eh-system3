@@ -1,8 +1,10 @@
 # remaining stuff
-- date time needs to be formatted better
-- sort album list by last update time
+- system to point to different img dirs at run time
+- look into more fiber server
 
 ## done
+- sort album list by last update time
+- date time needs to be formatted better
 - need redirect at / page
 - viewer mode not yet working
 

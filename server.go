@@ -94,5 +94,5 @@ func main() {
 
 
     // --- serve ---
-    app.Listen("localhost:4200")
+    app.Listen(":4200")
 }

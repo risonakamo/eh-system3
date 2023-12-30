@@ -3,12 +3,16 @@ package eh_system
 
 import (
 	"io/fs"
+	"sort"
+	"time"
 
 	"os"
 	"path/filepath"
 
 	"facette.io/natsort"
 )
+
+const TIME_FMT_STR="2006-01-02 15:04:05"
 
 /** get album info for every item in a target path */
 func GetAlbumInfos(imageDataPath string,targetPath string) []AlbumInfo {
@@ -30,6 +34,17 @@ func GetAlbumInfos(imageDataPath string,targetPath string) []AlbumInfo {
 
         albums=append(albums,getAlbumInfo(imageDataPath,subdirPath))
     }
+
+    // sorting by time
+    sort.Slice(albums,func (a,b int) bool {
+        var a2 time.Time
+        var b2 time.Time
+
+        a2,_=time.Parse(TIME_FMT_STR,albums[a].Date)
+        b2,_=time.Parse(TIME_FMT_STR,albums[b].Date)
+
+        return a2.After(b2)
+    })
 
     return albums
 }
@@ -119,13 +134,15 @@ func getAlbumInfo(imageDataPath string,targetPath string) AlbumInfo {
     var targetInfo os.FileInfo
     targetInfo,_=os.Stat(fullTargetPath)
 
+    var modtime string=targetInfo.ModTime().Format(TIME_FMT_STR)
+
     return AlbumInfo {
         Title:filepath.Base(targetPath),
         Items:len(allItems),
         ImmediateItems:len(immediateItems),
 
         Img:randFromArray[string](allItems),
-        Date:targetInfo.ModTime().String(),
+        Date:modtime,
 
         // it is an image album if all immediate items are non-directories
         Album:isAllFiles(immediateItems),
