@@ -3,6 +3,8 @@ package main
 import (
 	eh_system "eh_system/lib"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
@@ -12,10 +14,18 @@ const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\cg"
 const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata"
 
 func main() {
+    // --- variables ---
+    var HERE string
+    HERE,_=os.Executable()
+
+
+    // --- server setup ---
 	var app *fiber.App = fiber.New(fiber.Config {
         CaseSensitive: true,
         EnablePrintRoutes: true,
     })
+
+
 
     // ---- apis ----
     // get a single album for viewing mode
@@ -50,15 +60,15 @@ func main() {
 
 
     // --- statics ---
-    app.Static("/build","C:\\Users\\ktkm\\Desktop\\eh-system3\\build")
+    app.Static("/build",filepath.Join(HERE,"eh-system-web/build"))
 
-    app.Static("/viewer/*","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\pages\\ehviewer")
+    app.Static("/viewer/*",filepath.Join(HERE,"eh-system-web/web/pages/ehviewer"))
 
-    app.Static("/albums/*","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\pages\\albumexplore")
+    app.Static("/albums/*",filepath.Join(HERE,"eh-system-web/web/pages/albumexplore"))
 
-    app.Static("/assets/fonts","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\assets\\fonts")
+    app.Static("/assets/fonts",filepath.Join(HERE,"eh-system-web/web/assets/fonts"))
 
-    app.Static("/assets/imgs","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\assets\\imgs")
+    app.Static("/assets/imgs",filepath.Join(HERE,"eh-system-web/web/assets/imgs"))
 
     app.Static("/imagedata",IMAGE_DATA_PATH,fiber.Static{
         Browse:true,
@@ -67,6 +77,6 @@ func main() {
     app.Static("/thumbnaildata",THUMBNAIL_DATA_PATH)
 
 
-
+    // --- serve ---
     app.Listen("localhost:4200")
 }
