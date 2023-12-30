@@ -4,12 +4,12 @@ import (
 	eh_system "eh_system/lib"
 	"fmt"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\cg"
+const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata"
 
 func main() {
 	var app *fiber.App = fiber.New(fiber.Config {
@@ -26,6 +26,8 @@ func main() {
 
         var result []string=eh_system.GetAllImagesFlat(IMAGE_DATA_PATH,targetPath,true)
 
+        fmt.Printf("sending %d images",len(result))
+
         return ctx.JSON(eh_system.AlbumResponse {
             Urls:result,
             Mode:eh_system.LOCAL_MODE,
@@ -40,11 +42,31 @@ func main() {
 
         var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(IMAGE_DATA_PATH,targetPath)
 
-        spew.Dump(result)
+        fmt.Printf("sending %d albums\n",len(result))
 
         return ctx.JSON(result)
     })
 
-    // app.Use(logger.New())
+
+
+    // --- statics ---
+    app.Static("/build","C:\\Users\\ktkm\\Desktop\\eh-system3\\build")
+
+    app.Static("/viewer/*","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\pages\\ehviewer")
+
+    app.Static("/albums/*","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\pages\\albumexplore")
+
+    app.Static("/assets/fonts","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\assets\\fonts")
+
+    app.Static("/assets/imgs","C:\\Users\\ktkm\\Desktop\\eh-system3\\web\\assets\\imgs")
+
+    app.Static("/imagedata",IMAGE_DATA_PATH,fiber.Static{
+        Browse:true,
+    })
+
+    app.Static("/thumbnaildata",THUMBNAIL_DATA_PATH)
+
+
+
     app.Listen("localhost:4200")
 }
