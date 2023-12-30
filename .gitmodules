@@ -1,0 +1,3 @@
+[submodule "eh-system-web"]
+	path = eh-system-web
+	url = https://github.com/risonakamo/eh-system.git
