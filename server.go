@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/redirect"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -36,8 +37,9 @@ func main() {
         fmt.Println("getting album:",targetPath)
 
         var result []string=eh_system.GetAllImagesFlat(IMAGE_DATA_PATH,targetPath,true)
+        result=eh_system.FixImageUrls(result)
 
-        fmt.Printf("sending %d images",len(result))
+        fmt.Printf("-> sending %d images\n",len(result))
 
         return ctx.JSON(eh_system.AlbumResponse {
             Urls:result,
@@ -60,10 +62,16 @@ func main() {
         var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(IMAGE_DATA_PATH,targetPath)
         result=eh_system.FixAlbumInfoImageUrls(result)
 
-        fmt.Printf("sending %d albums\n",len(result))
+        fmt.Printf("-> sending %d albums\n",len(result))
 
         return ctx.JSON(result)
     })
+
+    app.Use(redirect.New(redirect.Config{
+        Rules:map[string]string {
+            "/":"/albums",
+        },
+    }))
 
 
 
