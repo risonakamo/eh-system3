@@ -13,6 +13,8 @@ import (
 
 const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\cg"
 const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata"
+// const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\3d"
+// const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata2"
 
 func main() {
     // --- variables ---

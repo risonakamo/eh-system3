@@ -35,3 +35,9 @@ type AlbumResponse struct {
     Urls []string `json:"urls"`
     Mode ApiMode `json:"apiMode"`
 }
+
+/* program configuration file */
+type EhSystemConfig struct {
+    ImageDir string
+    ThumbnailDir string
+}
