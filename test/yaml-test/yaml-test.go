@@ -1,4 +1,4 @@
-package main
+package main2
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ type TestYaml struct {
 	C []string
 }
 
-func main() {
+func main2() {
     var rfile []byte
     var err error
 	rfile,err=os.ReadFile("test.yml")
