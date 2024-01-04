@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/redirect"
 	// "github.com/gofiber/fiber/v2/middleware/logger"
@@ -29,8 +30,8 @@ func main() {
 
     // --- server setup ---
 	var app *fiber.App = fiber.New(fiber.Config {
-        CaseSensitive: true,
-        EnablePrintRoutes: true,
+        CaseSensitive:true,
+        EnablePrintRoutes:false,
     })
 
 
@@ -40,7 +41,7 @@ func main() {
     app.Post("/get-album",func (ctx *fiber.Ctx) error {
         var targetPath string=string(ctx.Body())
 
-        fmt.Println("getting album:",targetPath)
+        fmt.Fprintf(color.Output,"getting album: %s\n",color.GreenString(targetPath))
 
         var result []string=eh_system.GetAllImagesFlat(config.ImageDir,targetPath,true)
         result=eh_system.FixImageUrls(result)
