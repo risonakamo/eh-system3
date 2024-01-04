@@ -11,16 +11,20 @@ import (
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
 
-const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\cg"
-const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata"
-// const IMAGE_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\h\\3d"
-// const THUMBNAIL_DATA_PATH string="C:\\Users\\ktkm\\Desktop\\eh-system3\\thumbnaildatas\\thumbnaildata2"
+// config path relative to exe
+const CONFIG_PATH string="../config/config1.yml"
+// const CONFIG_PATH string="../config/config2.yml"
 
 func main() {
     // --- variables ---
     var HERE string
     HERE,_=os.Executable()
     HERE=filepath.Dir(HERE)
+
+    // --- config get ---
+    var config eh_system.EhSystemConfig=eh_system.LoadConfig(
+        filepath.Join(HERE,CONFIG_PATH),
+    )
 
 
     // --- server setup ---
@@ -38,7 +42,7 @@ func main() {
 
         fmt.Println("getting album:",targetPath)
 
-        var result []string=eh_system.GetAllImagesFlat(IMAGE_DATA_PATH,targetPath,true)
+        var result []string=eh_system.GetAllImagesFlat(config.ImageDir,targetPath,true)
         result=eh_system.FixImageUrls(result)
 
         fmt.Printf("-> sending %d images\n",len(result))
@@ -61,7 +65,7 @@ func main() {
 
         fmt.Println("getting album info:",displayTargetPath)
 
-        var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(IMAGE_DATA_PATH,targetPath)
+        var result []eh_system.AlbumInfo=eh_system.GetAlbumInfos(config.ImageDir,targetPath)
         result=eh_system.FixAlbumInfoImageUrls(result)
 
         fmt.Printf("-> sending %d albums\n",len(result))
@@ -88,13 +92,13 @@ func main() {
 
     app.Static("/assets/imgs",filepath.Join(HERE,"../eh-system-web/web/assets/imgs"))
 
-    app.Static("/imagedata",IMAGE_DATA_PATH,fiber.Static{
+    app.Static("/imagedata",config.ImageDir,fiber.Static{
         Browse:true,
     })
 
-    app.Static("/thumbnaildata",THUMBNAIL_DATA_PATH)
+    app.Static("/thumbnaildata",config.ThumbnailDir)
 
 
     // --- serve ---
-    app.Listen(":4200")
+    app.Listen(":80")
 }

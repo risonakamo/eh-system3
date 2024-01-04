@@ -38,6 +38,6 @@ type AlbumResponse struct {
 
 /* program configuration file */
 type EhSystemConfig struct {
-    ImageDir string
-    ThumbnailDir string
+    ImageDir string `yaml:"imageDir"`
+    ThumbnailDir string `yaml:"thumbnailDir"`
 }

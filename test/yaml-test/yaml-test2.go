@@ -1,4 +1,4 @@
-package main
+package main2
 
 import (
 	"log"
@@ -14,7 +14,7 @@ type TestYaml struct {
 	C []string
 }
 
-func main() {
+func main2() {
     rfile,_:=os.Open("test.yml")
 	decoder:=yaml.NewDecoder(rfile)
 
