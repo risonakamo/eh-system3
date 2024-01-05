@@ -18,12 +18,15 @@ func main() {
     HERE,_=os.Executable()
     HERE=filepath.Dir(HERE)
 
+
+
     // --- config get ---
     var args eh_system.EhSystemArgs=eh_system.GetArgs()
 
     var config eh_system.EhSystemConfig=eh_system.LoadConfig(
         filepath.Join(HERE,"../config",args.ConfigName+".yml"),
     )
+
 
 
     // --- server setup ---
@@ -100,5 +103,8 @@ func main() {
 
 
     // --- serve ---
+    fmt.Fprintf(color.Output,"images dir: %s\n",color.GreenString(config.ImageDir))
+    fmt.Fprintf(color.Output,"thumbnails dir: %s\n",color.GreenString(config.ThumbnailDir))
+
     app.Listen(":80")
 }
