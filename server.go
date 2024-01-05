@@ -12,10 +12,6 @@ import (
 	// "github.com/gofiber/fiber/v2/middleware/logger"
 )
 
-// config path relative to exe
-const CONFIG_PATH string="../config/config1.yml"
-// const CONFIG_PATH string="../config/config2.yml"
-
 func main() {
     // --- variables ---
     var HERE string
@@ -23,8 +19,10 @@ func main() {
     HERE=filepath.Dir(HERE)
 
     // --- config get ---
+    var args eh_system.EhSystemArgs=eh_system.GetArgs()
+
     var config eh_system.EhSystemConfig=eh_system.LoadConfig(
-        filepath.Join(HERE,CONFIG_PATH),
+        filepath.Join(HERE,"../config",args.ConfigName+".yml"),
     )
 
 
@@ -95,6 +93,7 @@ func main() {
 
     app.Static("/imagedata",config.ImageDir,fiber.Static{
         Browse:true,
+        ByteRange:true,
     })
 
     app.Static("/thumbnaildata",config.ThumbnailDir)

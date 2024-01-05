@@ -41,3 +41,9 @@ type EhSystemConfig struct {
     ImageDir string `yaml:"imageDir"`
     ThumbnailDir string `yaml:"thumbnailDir"`
 }
+
+/* cli args */
+type EhSystemArgs struct {
+    // name of config file, relative to config folder of this app, without file extension
+    ConfigName string
+}
