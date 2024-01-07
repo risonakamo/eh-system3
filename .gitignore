@@ -1,2 +1,5 @@
 output
 test.png
+test/**/*.mp4
+test/**/*.png
+test/**/*.jpg
