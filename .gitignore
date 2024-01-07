@@ -1,5 +1,5 @@
 output
 test.png
-test/**/*.mp4
-test/**/*.png
-test/**/*.jpg
+experiments/**/*.mp4
+experiments/**/*.png
+experiments/**/*.jpg
