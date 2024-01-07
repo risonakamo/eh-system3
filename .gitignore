@@ -3,3 +3,7 @@ test.png
 experiments/**/*.mp4
 experiments/**/*.png
 experiments/**/*.jpg
+test/**/*.mp4
+test/**/*.png
+test/**/*.jpg
+test/**/*.gif

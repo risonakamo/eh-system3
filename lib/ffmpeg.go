@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/fatih/color"
@@ -42,7 +44,7 @@ func GenThumbnail(
         return err
     }
 
-    fmt.Fprintf(color.Output,"generated thumbnail: %v",color.YellowString(outputFile))
+    fmt.Fprintf(color.Output,"generated thumbnail: %v\n",color.YellowString(outputFile))
     return nil
 }
 
@@ -111,4 +113,18 @@ func thumbnailGenWorker(
     }
 
     wg.Done()
+}
+
+// convert a path to an image to a path to a thumbnail of the image, if it were to be placed in
+// the target dir. gives jpg extension.
+func ImagePathToThumbnailPath(
+    srcImg string,
+    outputDir string,
+) string {
+    var filename string=strings.TrimSuffix(
+        filepath.Base(srcImg),
+        filepath.Ext(srcImg),
+    )
+
+    return filepath.Join(outputDir,filename+".jpg")
 }
