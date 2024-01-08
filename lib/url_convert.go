@@ -29,3 +29,16 @@ func FixImageUrls(urls []string) []string {
 
     return urls
 }
+
+// given a path to an image **relative to the imageDir**, return the corresponding thumbnail
+// path for that image. the thumbnail's extension is always jpg, and it will be relative to
+// the thumbnails dir instead
+func findThumbnailOfImage(
+    imageDir string,
+    thumbnailDir string,
+    image string,
+) string {
+    var relPath string
+    relPath,_=filepath.Rel(imageDir,image)
+    return filepath.Join(thumbnailDir,relPath)
+}
