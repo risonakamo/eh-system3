@@ -18,6 +18,7 @@ func GenThumbnail(
 	targetFile string,
 	outputFile string,
     size int,
+    suppressFfmpegError bool,
 ) error {
 	var cmd *exec.Cmd=exec.Command(
         "ffmpeg.exe",
@@ -39,8 +40,12 @@ func GenThumbnail(
 
     if err!=nil {
         color.Red("error while generating thumbnail: %v",targetFile)
-        color.Red("ffmpeg error text:")
-        fmt.Println(string(out))
+
+        if !suppressFfmpegError {
+            color.Red("ffmpeg error text:")
+            fmt.Println(string(out))
+        }
+
         return err
     }
 
@@ -59,6 +64,7 @@ func GenThumbnails(
     outputs []string,
     size int,
     workers int,
+    suppressFfmpegError bool,
 ) error {
     if len(inputs)!=len(outputs) {
         color.Red("got differing sized input/output arrays. "+
@@ -80,12 +86,12 @@ func GenThumbnails(
     }
 
     var wg sync.WaitGroup
-    var jobsChannel chan ThumbnailJob
+    var jobsChannel chan ThumbnailJob=make(chan ThumbnailJob)
 
     // spawn workers
     for i:=0;i<workers;i++ {
         wg.Add(1)
-        go thumbnailGenWorker(jobsChannel,size,&wg)
+        go thumbnailGenWorker(jobsChannel,size,&wg,suppressFfmpegError)
     }
 
     // submit jobs to workers
@@ -105,11 +111,19 @@ func thumbnailGenWorker(
     jobChannel <-chan ThumbnailJob,
     size int,
     wg *sync.WaitGroup,
+    suppressFfmpegError bool,
 ) {
     // work until the channel closes
-    var job ThumbnailJob
-    for job = range jobChannel {
-        GenThumbnail(job.input,job.output,size)
+    for {
+        var job ThumbnailJob
+        var ok bool
+        job,ok=<-jobChannel
+
+        if !ok {
+            break
+        }
+
+        GenThumbnail(job.input,job.output,size,suppressFfmpegError)
     }
 
     wg.Done()
