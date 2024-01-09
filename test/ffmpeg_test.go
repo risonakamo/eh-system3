@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 // working dir for dumping test outputs
@@ -51,7 +49,7 @@ func TestMain(m *testing.M) {
 
 
     // adding a bad img to test imgs with bad
-    copy(testImagesWithBad,testImages)
+    testImagesWithBad=append(testImagesWithBad,testImages...)
     testImagesWithBad=append(testImagesWithBad,"bad.png")
 
 
@@ -79,28 +77,53 @@ func TestGenerateThumbnail(t *testing.T) {
     }
 }
 
-// test generate parallel on all imgs
+// test generate parallel on test imgs with a single bad img. it should print out that the
+// bad img failed, but the whole thing should not fail.
+// also tests with a mismatching array, which should cause error
 func TestGenerateParallel(t *testing.T) {
     var outputImgs []string
 
-    fmt.Println("what")
-    for i := range testImagesWithBad {
-        outputImgs=append(outputImgs,eh_system.ImagePathToThumbnailPath(
-            testImagesWithBad[i],
-            outputDir2,
-        ))
-    }
+    t.Run("1",func(t *testing.T) {
+        for i := range testImagesWithBad {
+            outputImgs=append(outputImgs,eh_system.ImagePathToThumbnailPath(
+                testImagesWithBad[i],
+                outputDir2,
+            ))
+        }
 
-    spew.Dump(outputImgs)
-    var err error=eh_system.GenThumbnails(
-        testImagesWithBad,
-        outputImgs,
-        100,
-        5,
-        false,
-    )
+        var err error=eh_system.GenThumbnails(
+            testImagesWithBad,
+            outputImgs,
+            100,
+            5,
+            true,
+        )
 
-    if err!=nil {
-        t.Error("error from gen thumbnails")
-    }
+        if err!=nil {
+            t.Error("error from gen thumbnails")
+        }
+    })
+
+    t.Run("2",func(t *testing.T) {
+        for i := range testImagesWithBad {
+            outputImgs=append(outputImgs,eh_system.ImagePathToThumbnailPath(
+                testImagesWithBad[i],
+                outputDir2,
+            ))
+        }
+
+        var err error=eh_system.GenThumbnails(
+            testImages,
+            outputImgs,
+            100,
+            5,
+            true,
+        )
+
+        if err!=nil {
+            return
+        }
+
+        t.Error("did not properly return error")
+    })
 }
