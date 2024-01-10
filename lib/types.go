@@ -47,3 +47,11 @@ type EhSystemArgs struct {
     // name of config file, relative to config folder of this app, without file extension
     ConfigName string
 }
+
+// represents a thumbnail that is missing. has path of the original
+// item and the thumbnail path (that is not existing and needs to
+// be created
+type MissingThumbnail struct {
+    srcItem string
+    neededThumbnail string
+}

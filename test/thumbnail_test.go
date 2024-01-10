@@ -2,16 +2,18 @@ package eh_system
 
 import (
 	eh_system "eh_system/lib"
+	"fmt"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
+// test running find missing thumbnails
 func TestFindMissingThumbnails(t *testing.T) {
-    res:=eh_system.FindMissingImagesWithoutThumbnails(
+    var res []eh_system.MissingThumbnail=eh_system.FindMissingImagesWithoutThumbnails(
         "C:/Users/ktkm/Desktop/h/cg",
         "C:/Users/ktkm/Desktop/eh-system3/thumbnaildatas/thumbnaildata",
+        10,
     )
 
-    spew.Dump(res)
+    fmt.Println(len(res))
+    // spew.Dump(res)
 }

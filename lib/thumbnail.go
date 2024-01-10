@@ -13,10 +13,11 @@ func FindMissingImagesWithoutThumbnails(
     imageDir string,
     thumbnailDir string,
     workers int,
-) []string {
-    var res []string
+) []MissingThumbnail {
+    var res []MissingThumbnail
     var imagePaths []string
 
+    // collect all valid image paths
     filepath.WalkDir(imageDir,func(path string,info fs.DirEntry,err error) error {
         if info.IsDir() || !thumbnailableFile(path) {
             return nil
@@ -28,8 +29,9 @@ func FindMissingImagesWithoutThumbnails(
     })
 
     var wg sync.WaitGroup
+    var collectorWg sync.WaitGroup
     var imagePathsChannel chan string=make(chan string)
-    var missingThumbnailsChannel chan string=make(chan string)
+    var missingThumbnailsChannel chan MissingThumbnail=make(chan MissingThumbnail)
 
     // spawn workers
     for i:=0;i<workers;i++ {
@@ -44,13 +46,38 @@ func FindMissingImagesWithoutThumbnails(
         )
     }
 
+    // spawn worker to read from result channel
+    collectorWg.Add(1)
+    go func() {
+        for {
+            var missingThumbnail MissingThumbnail
+            var ok bool
+            missingThumbnail,ok=<-missingThumbnailsChannel
+
+            if !ok {
+                collectorWg.Done()
+                return
+            }
+
+            res=append(res,missingThumbnail)
+        }
+    }()
+
     // submit jobs
     for i:=range imagePaths {
         imagePathsChannel<-imagePaths[i]
     }
 
+    // all image paths sent, done
+    close(imagePathsChannel)
 
+    // wait for workers to complete last jobs
     wg.Wait()
+
+    // once all workers done, close the result channel,
+    // wait for collector channel to finish
+    close(missingThumbnailsChannel)
+    collectorWg.Wait()
 
     return res
 }
@@ -59,7 +86,7 @@ func FindMissingImagesWithoutThumbnails(
 // if it doesn't, dumps the result into nonExistingThumbnails channel
 func thumbnailCheckWorker(
     imagesChannel <-chan string,
-    missingThumbnailsChannel chan<- string,
+    missingThumbnailsChannel chan<- MissingThumbnail,
     wg *sync.WaitGroup,
 
     imageDir string,
@@ -84,7 +111,10 @@ func thumbnailCheckWorker(
 
         // check if that thumbnail exists
         if !isFile(thumbnailPath) {
-            missingThumbnailsChannel<-thumbnailPath
+            missingThumbnailsChannel<-MissingThumbnail{
+                srcItem:imagePath,
+                neededThumbnail:thumbnailPath,
+            }
         }
     }
 }
