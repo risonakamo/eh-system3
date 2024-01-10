@@ -1,11 +1,48 @@
 package eh_system
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sync"
 )
+
+// detect all missing thumbnails, and generate them all
+func GenerateMissingThumbnails(
+    imageDir string,
+    thumbnailDir string,
+    size int,
+
+    workers int,
+    suppressFfmpegError bool,
+) {
+    var missing []MissingThumbnail=FindMissingImagesWithoutThumbnails(
+        imageDir,
+        thumbnailDir,
+        workers,
+    )
+
+    fmt.Printf("missing %v thumbnails\n",len(missing))
+
+    var inputs []string
+    var outputs []string
+
+    for i := range missing {
+        inputs=append(inputs,missing[i].srcItem)
+        outputs=append(outputs,missing[i].neededThumbnail)
+    }
+
+    fmt.Println("generating...")
+
+    GenThumbnails(
+        inputs,
+        outputs,
+        size,
+        workers,
+        suppressFfmpegError,
+    )
+}
 
 // return paths of images under target image dir that do not have thumbnails
 // in the corresponding thumbnail dir
