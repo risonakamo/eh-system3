@@ -5,6 +5,8 @@ package eh_system
 import (
 	"io/fs"
 	"math/rand"
+	"path/filepath"
+	"strings"
 )
 
 /** shuffle an array */
@@ -28,4 +30,17 @@ func isAllFiles(items []fs.DirEntry) bool {
 /** random pick from array */
 func randFromArray[T any](array []T) T {
     return array[rand.Intn(len(array))]
+}
+
+// replace extension of a file path with a new one. new ext should not have
+// a dot.
+// does not matter if it is a partial path or full path, just that the path
+// ends with an extension
+func replaceExt(path string,newExt string) string {
+    var basename string=strings.TrimSuffix(
+        path,
+        filepath.Ext(path),
+    )
+
+    return basename+"."+newExt
 }
