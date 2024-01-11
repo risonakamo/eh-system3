@@ -3,6 +3,7 @@ package eh_system
 import (
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -20,6 +21,13 @@ func GenThumbnail(
     size int,
     suppressFfmpegError bool,
 ) error {
+    var err error=os.MkdirAll(filepath.Dir(outputFile),0655)
+
+    if err!=nil {
+        color.Red("error while trying to make directory for:",outputFile)
+        return err
+    }
+
 	var cmd *exec.Cmd=exec.Command(
         "ffmpeg.exe",
         "-i",targetFile,
@@ -35,7 +43,6 @@ func GenThumbnail(
     )
 
     var out []byte
-    var err error
     out,err=cmd.CombinedOutput()
 
     if err!=nil {

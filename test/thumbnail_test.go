@@ -17,3 +17,14 @@ func TestFindMissingThumbnails(t *testing.T) {
     fmt.Println(len(res))
     // spew.Dump(res)
 }
+
+func TestGenMissingThumbnails(t *testing.T) {
+    eh_system.GenerateMissingThumbnails(
+        "C:/Users/ktkm/Desktop/eh-system4/test/test-images",
+        "C:/Users/ktkm/Desktop/eh-system4/test/output3",
+        160,
+
+        5,
+        false,
+    )
+}
