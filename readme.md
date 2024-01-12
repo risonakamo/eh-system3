@@ -1,9 +1,18 @@
-# running
+# build/setup
+## server
+in `dev-scripts`, run `build-all.bat`
+
+## web
+in `eh-system-web`, follow readme to build website (don't need to do anything with nodejs server)
+
+# usage
 ```
 eh_system.exe -c <config name>
 ```
 
 config name must reference the name of a file in the config folder, **without the file extension**
+
+recommended to create run scripts like in `scripts` folder
 
 # configuration
 config files must be placed in config folder and have file extension `.yml`
@@ -11,8 +20,4 @@ config files must be placed in config folder and have file extension `.yml`
 see examples for how to edit
 
 # development
-## web
-in `eh-system-web`, follow readme to build website (don't need to do anything with nodejs server)
-
-## build
-`run.bat` to build and run server.
+see `dev-scripts` for scripts to build and run
