@@ -1,4 +1,6 @@
 # build/setup
+as long as your config files **do not use relative paths**, this repo should be fully portable on your computer (can be moved anywhere).
+
 ## server
 in `dev-scripts`, run `build-all.bat`
 
