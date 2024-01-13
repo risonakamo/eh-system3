@@ -1,10 +1,10 @@
 # build/setup
 as long as your config files **do not use relative paths**, this repo should be fully portable on your computer (can be moved anywhere).
 
-## server
+## 1. server
 in `dev-scripts`, run `build-all.bat`
 
-## web
+## 2. web
 in `eh-system-web`, follow readme to build website (don't need to do anything with nodejs server)
 
 # usage
