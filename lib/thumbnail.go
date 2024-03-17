@@ -54,6 +54,14 @@ func FindMissingImagesWithoutThumbnails(
     var res []MissingThumbnail
     var imagePaths []string
 
+    if !isDir(imageDir) {
+        panic("missing image dir")
+    }
+
+    if !isDir(thumbnailDir) {
+        panic("missing thumbnail dir")
+    }
+
     // collect all valid image paths
     filepath.WalkDir(imageDir,func(path string,info fs.DirEntry,err error) error {
         if info.IsDir() || !thumbnailableFile(path) {
@@ -159,7 +167,7 @@ func thumbnailCheckWorker(
 // return if the target file is thumbnailable
 func thumbnailableFile(path string) bool {
     switch filepath.Ext(path) {
-    case ".png",".jpg",".gif",".mp4":
+    case ".png",".jpg",".gif",".mp4",".webp":
         return true
     default:
         return false

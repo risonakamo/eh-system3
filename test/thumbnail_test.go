@@ -10,7 +10,7 @@ import (
 func TestFindMissingThumbnails(t *testing.T) {
     var res []eh_system.MissingThumbnail=eh_system.FindMissingImagesWithoutThumbnails(
         "C:/Users/ktkm/Desktop/h/cg",
-        "C:/Users/ktkm/Desktop/eh-system3/thumbnaildatas/thumbnaildata",
+        "C:/Users/ktkm/Desktop/h/thumbnaildatas",
         10,
     )
 
@@ -20,8 +20,8 @@ func TestFindMissingThumbnails(t *testing.T) {
 
 func TestGenMissingThumbnails(t *testing.T) {
     eh_system.GenerateMissingThumbnails(
-        "C:/Users/ktkm/Desktop/eh-system4/test/test-images",
-        "C:/Users/ktkm/Desktop/eh-system4/test/output3",
+        "test-images",
+        "output3",
         160,
 
         5,

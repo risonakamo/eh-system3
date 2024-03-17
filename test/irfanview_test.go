@@ -7,8 +7,8 @@ import (
 
 func Test_IrfanviewGenerate(t *testing.T) {
     irfanview.GenerateThumbnail(
-        "./test-images/webp1.webp",
-        "output/webp1.jpg",
+        "./test-images/webp3.webp",
+        "output/webp3.jpg",
         100,
     )
 }
