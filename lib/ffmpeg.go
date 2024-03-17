@@ -121,15 +121,7 @@ func thumbnailGenWorker(
     suppressFfmpegError bool,
 ) {
     // work until the channel closes
-    for {
-        var job ThumbnailJob
-        var ok bool
-        job,ok=<-jobChannel
-
-        if !ok {
-            break
-        }
-
+    for job := range jobChannel {
         GenThumbnail(job.input,job.output,size,suppressFfmpegError)
     }
 
