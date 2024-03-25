@@ -167,7 +167,7 @@ func thumbnailCheckWorker(
 // return if the target file is thumbnailable
 func thumbnailableFile(path string) bool {
     switch filepath.Ext(path) {
-    case ".png",".jpg",".gif",".mp4",".webp":
+    case ".png",".jpg",".jpeg",".gif",".mp4",".webp":
         return true
     default:
         return false
